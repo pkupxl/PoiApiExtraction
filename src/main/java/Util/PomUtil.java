@@ -6,9 +6,7 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class PomUtil {
     public static File getPomFile(String path){
@@ -91,5 +89,44 @@ public class PomUtil {
             }
         }
         return null;
+    }
+
+    public static void main(String args[]){
+        int cnt=0;
+        String dataPath="D:\\Data";
+        File Dir=new File(dataPath);
+        File[] Projects = Dir.listFiles();
+
+        List<String>VS=new ArrayList<String>();
+        Map<String ,Integer>m=new HashMap<String ,Integer>();
+        for(File f:Projects){
+            File pom=getPomFile(f.getAbsolutePath());
+            String v=getPoiVersion(pom);
+            cnt++;
+     //       System.out.println(cnt+": "+ v);
+            if(!VS.contains(v)){
+                VS.add(v);
+            }
+            if(m.containsKey(v)){
+                int n=m.get(v);
+                m.put(v,n+1);
+            }else{
+                m.put(v,1);
+            }
+        }
+
+        VS.sort(new Comparator<String>() {
+            public int compare(String o1, String o2) {
+                return o1.compareTo(o2);
+            }
+        });
+
+        int sum=0;
+        for(String s:VS){
+            System.out.println(s+" : "+m.get(s));
+            sum+=m.get(s);
+        }
+        System.out.println(sum);
+
     }
 }
